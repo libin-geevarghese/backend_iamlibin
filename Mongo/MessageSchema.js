@@ -1,7 +1,22 @@
 const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema({
-  newMessage: {
+  message: {
+    type: String,
+    // required: true,
+    default: "failed to parse/no message",
+  },
+  name: {
+    type: String,
+    // required: true,
+    default: "0",
+  },
+  email: {
+    type: String,
+    // required: true,
+    default: "0",
+  },
+  phone: {
     type: String,
     // required: true,
     default: "0",
