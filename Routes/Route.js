@@ -9,6 +9,8 @@ router.post("/message", async (req, res) => {
   try {
     const newMessage = new Message(req.body);
     await newMessage.save();
+    io.emit("newMessage", newMessage);
+
     res.status(201).json(newMessage);
   } catch (error) {
     console.error(error);
