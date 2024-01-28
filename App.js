@@ -1,5 +1,9 @@
 const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 require("dotenv").config();
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
@@ -32,6 +36,14 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", apiRoutes); // Mount API routes under /api
+
+io.on("connection", (socket) => {
+  console.log("A client connected");
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}.   localhost:${PORT} `);
