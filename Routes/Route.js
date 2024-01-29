@@ -1,15 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const Message = require("../Mongo/MessageSchema");
-const axios = require("axios");
-let apiCounter = 0;
 
 // Create a new message
 router.post("/message", async (req, res) => {
   try {
     const newMessage = new Message(req.body);
     await newMessage.save();
+
+    // Access 'io' from the app
+    const io = req.app.get("io");
+
+    // Emit the event
     io.emit("newMessage", newMessage);
+    console.log("successfully emitted");
 
     res.status(201).json(newMessage);
   } catch (error) {
@@ -29,8 +33,7 @@ router.get("/message", async (req, res) => {
   }
 });
 
-//to delet messages
-
+// Delete messages
 router.delete("/message/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,7 +41,7 @@ router.delete("/message/:id", async (req, res) => {
     await Message.findByIdAndDelete(id);
     res.status(204).end(); // Success
   } catch (error) {
-    console.log("delet request reached backend router");
+    console.log("Delete request reached backend router");
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
